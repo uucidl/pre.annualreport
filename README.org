@@ -1,0 +1,8 @@
+a small playground for nodejs server/client apps
+
+* Ideas
+
+NPM
+Browerify
+nodejs
+jslint

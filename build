@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# -*- sh -*-
+
+HERE="$(dirname "$0")"
+
+PATH=$PATH:"${HERE}"/node_modules/.bin
+
+function lint() {
+	 jslint "${HERE}"/*.js "${HERE}"/test/*.js
+}
+
+function uat() {
+	 npm run-script test
+}
+
+lint && uat

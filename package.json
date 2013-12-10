@@ -1,0 +1,12 @@
+{
+    "name": "finance-report",
+    "description": "generates helpful indicators from financial ledgers",
+    "version": "0.0.1",
+    "scripts": {
+	"test": "mocha"
+    },
+    "devDependencies": {
+	"mocha": "1.15.1",
+	"jslint": "0.2.5"
+    }
+}
