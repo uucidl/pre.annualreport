@@ -3,14 +3,4 @@
 
 HERE="$(dirname "$0")"
 
-PATH=$PATH:"${HERE}"/node_modules/.bin
-
-function lint() {
-	 jslint "${HERE}"/*.js "${HERE}"/test/*.js
-}
-
-function uat() {
-	 npm run-script test
-}
-
-lint && uat
+npm install && npm run-script lint && npm run-script test
