@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ledger version="196608">
+  <commodities>
+    <commodity flags="S">
+      <symbol>¥</symbol>
+      <annotation>
+        <price>
+          <commodity flags="S">
+            <symbol>€</symbol>
+          </commodity>
+          <quantity>0.0101998001998</quantity>
+        </price>
+        <date>2013/12/11</date>
+      </annotation>
+    </commodity>
+    <commodity flags="S">
+      <symbol>€</symbol>
+    </commodity>
+  </commodities>
+  <accounts>
+    <account id="00007fc7eb401730">
+      <name/>
+      <fullname/>
+      <account-total>
+        <balance>
+          <amount>
+            <commodity flags="S">
+              <symbol>€</symbol>
+            </commodity>
+            <quantity>-10.21</quantity>
+          </amount>
+          <amount>
+            <commodity flags="S">
+              <symbol>¥</symbol>
+            </commodity>
+            <quantity>1001</quantity>
+          </amount>
+        </balance>
+      </account-total>
+      <account id="00007fc7eb404e70">
+        <name>Assets</name>
+        <fullname>Assets</fullname>
+        <account-total>
+          <amount>
+            <commodity flags="S">
+              <symbol>€</symbol>
+            </commodity>
+            <quantity>-10.21</quantity>
+          </amount>
+        </account-total>
+        <account id="00007fc7eb405210">
+          <name>Bank</name>
+          <fullname>Assets:Bank</fullname>
+          <account-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-10.21</quantity>
+            </amount>
+          </account-amount>
+          <account-total>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-10.21</quantity>
+            </amount>
+          </account-total>
+        </account>
+      </account>
+      <account id="00007fc7eb404390">
+        <name>Expenses</name>
+        <fullname>Expenses</fullname>
+        <account-total>
+          <balance>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>12.5</quantity>
+            </amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>¥</symbol>
+              </commodity>
+              <quantity>1001</quantity>
+            </amount>
+          </balance>
+        </account-total>
+        <account id="00007fc7eb4046a0">
+          <name>Cash</name>
+          <fullname>Expenses:Cash</fullname>
+          <account-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>¥</symbol>
+              </commodity>
+              <quantity>1001</quantity>
+            </amount>
+          </account-amount>
+          <account-total>
+            <amount>
+              <commodity flags="S">
+                <symbol>¥</symbol>
+              </commodity>
+              <quantity>1001</quantity>
+            </amount>
+          </account-total>
+        </account>
+        <account id="00007fc7eb406030">
+          <name>Food</name>
+          <fullname>Expenses:Food</fullname>
+          <account-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>12.5</quantity>
+            </amount>
+          </account-amount>
+          <account-total>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>12.5</quantity>
+            </amount>
+          </account-total>
+        </account>
+      </account>
+      <account id="00007fc7eb4066a0">
+        <name>Liabilities</name>
+        <fullname>Liabilities</fullname>
+        <account-total>
+          <amount>
+            <commodity flags="S">
+              <symbol>€</symbol>
+            </commodity>
+            <quantity>-12.5</quantity>
+          </amount>
+        </account-total>
+        <account id="00007fc7eb406a30">
+          <name>CC</name>
+          <fullname>Liabilities:CC</fullname>
+          <account-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-12.5</quantity>
+            </amount>
+          </account-amount>
+          <account-total>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-12.5</quantity>
+            </amount>
+          </account-total>
+        </account>
+      </account>
+    </account>
+  </accounts>
+  <transactions>
+    <transaction state="cleared">
+      <date>2013/12/11</date>
+      <payee>A cleared transaction</payee>
+      <postings>
+        <posting state="cleared">
+          <account ref="00007fc7eb4046a0">
+            <name>Expenses:Cash</name>
+          </account>
+          <post-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>¥</symbol>
+              </commodity>
+              <quantity>1001</quantity>
+            </amount>
+          </post-amount>
+          <cost>
+            <commodity flags="S">
+              <symbol>€</symbol>
+            </commodity>
+            <quantity>10.21</quantity>
+          </cost>
+          <total>
+            <amount>
+              <commodity flags="S">
+                <symbol>¥</symbol>
+              </commodity>
+              <quantity>1001</quantity>
+            </amount>
+          </total>
+        </posting>
+        <posting state="cleared">
+          <account ref="00007fc7eb405210">
+            <name>Assets:Bank</name>
+          </account>
+          <post-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-10.21</quantity>
+            </amount>
+          </post-amount>
+          <total>
+            <balance>
+              <amount>
+                <commodity flags="S">
+                  <symbol>€</symbol>
+                </commodity>
+                <quantity>-10.21</quantity>
+              </amount>
+              <amount>
+                <commodity flags="S">
+                  <symbol>¥</symbol>
+                </commodity>
+                <quantity>1001</quantity>
+              </amount>
+            </balance>
+          </total>
+        </posting>
+      </postings>
+    </transaction>
+    <transaction>
+      <date>2013/12/12</date>
+      <payee>An uncleared transaction</payee>
+      <postings>
+        <posting>
+          <account ref="00007fc7eb406030">
+            <name>Expenses:Food</name>
+          </account>
+          <post-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>12.5</quantity>
+            </amount>
+          </post-amount>
+          <total>
+            <balance>
+              <amount>
+                <commodity flags="S">
+                  <symbol>€</symbol>
+                </commodity>
+                <quantity>2.29</quantity>
+              </amount>
+              <amount>
+                <commodity flags="S">
+                  <symbol>¥</symbol>
+                </commodity>
+                <quantity>1001</quantity>
+              </amount>
+            </balance>
+          </total>
+        </posting>
+        <posting>
+          <account ref="00007fc7eb406a30">
+            <name>Liabilities:CC</name>
+          </account>
+          <post-amount>
+            <amount>
+              <commodity flags="S">
+                <symbol>€</symbol>
+              </commodity>
+              <quantity>-12.5</quantity>
+            </amount>
+          </post-amount>
+          <total>
+            <balance>
+              <amount>
+                <commodity flags="S">
+                  <symbol>€</symbol>
+                </commodity>
+                <quantity>-10.21</quantity>
+              </amount>
+              <amount>
+                <commodity flags="S">
+                  <symbol>¥</symbol>
+                </commodity>
+                <quantity>1001</quantity>
+              </amount>
+            </balance>
+          </total>
+        </posting>
+      </postings>
+    </transaction>
+  </transactions>
+</ledger>
+

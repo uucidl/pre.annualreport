@@ -6,6 +6,9 @@ var assert = require('assert');
 var ledger = require('../lib/io/jw-ledger');
 var util = require('util');
 var when = require('when');
+var fs = require('fs');
+var jsonQuery = require('json-query');
+var BigNum = require('bignumber.js');
 
 describe('ledger', function () {
     it('should fail on invalid version strings', function (done) {
@@ -16,7 +19,7 @@ describe('ledger', function () {
         ledger.version(mock_ledger).done(function (version) {
             assert.ok(false, util.format('we expected an error and got %s instead', version));
             done();
-        }, function(err) {
+        }, function () {
             assert.ok(true, 'hurray!');
             done();
         });
@@ -49,5 +52,71 @@ describe('ledger', function () {
             assert.ok(version !== null);
             done();
         }, done);
+    });
+
+    it('should read transactions from a ledger XML output', function (done) {
+        function mock_ledger() {
+            /*jslint stupid:true*/
+            return when.resolve([fs.readFileSync('test/data/ledger.xml'), null]);
+        }
+
+        ledger.query('fake-file', [], mock_ledger).then(function (result) {
+            console.log(result);
+
+            assert.equal(2, result.transactions.length);
+            assert.equal(1, result.transactions.filter(
+                function (e) { return e.state === 'cleared'; }
+            ).length);
+
+            assert.deepEqual(
+                [
+                    "2013-12-11",
+                    "2013-12-12",
+                ],
+                Object.keys(
+                    result.transactions.map(function (e) {
+                        return e.date.join('-');
+                    }).reduce(function (val, element) {
+                        val[element] = true;
+                        return val;
+                    }, {})
+                )
+            );
+            assert.notEqual(
+                "",
+                result.transactions.reduce(
+                    function (val, element) {
+                        assert.ok(element.payee !== undefined);
+                        return val + element.payee;
+                    },
+                    ""
+                )
+            );
+
+            var postings = result.transactions.map(function (e) {
+                return e.postings;
+            }).reduce(function (val, element) {
+                return val.concat(element);
+            }, []);
+
+            assert.ok(postings.reduce(function (val, element) {
+                val[element.account.name] = true;
+                return val;
+            }, {}).hasOwnProperty('Expenses:Cash'));
+
+            assert.equal(
+                new BigNum("-10.21").toString(),
+                postings.reduce(function (val, posting) {
+                    console.log(posting);
+                    if (posting.amount.commodity === '€') {
+                        return val.plus(posting.amount.quantity);
+                    }
+
+                    return val;
+                }, new BigNum(0)).toString()
+            );
+
+            console.log(postings);
+        }).then(done, done);
     });
 });

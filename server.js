@@ -11,11 +11,11 @@ ledger.version().then(function (version) {
 }).then(function () {
     console.log('querying ledger');
     return ledger.query(
-	'/Volumes/ACTIVEDOCS/financial/ledger.dat',
-	['reg', 'Assets:Checking:ING']
-    )
+        '/Volumes/ACTIVEDOCS/financial/ledger.dat',
+        ['^Assets:Checking:ING', '^Liabilities:ING']
+    );
 }).then(function (data) {
     console.log(data);
-}).then(null, function(err) {
-    console.log(err);
+}, function (err) {
+    console.log(err.stack);
 });

@@ -1,0 +1,7 @@
+2013/12/11 * A cleared transaction
+  Expenses:Cash  1001 ¥
+  Assets:Bank  -10.21 €
+
+2013/12/12 An uncleared transaction
+  Expenses:Food  12.50 €
+  Liabilities:CC
