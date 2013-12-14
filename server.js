@@ -1,21 +1,114 @@
 "use strict";
 
-// this is a server
+var connect = require('connect');
+var connectRoute = require('connect-route');
+var http = require('http');
+var util = require('util');
+var url = require('url');
+var when = require('when');
 
 var ledger = require('./lib/io/jw-ledger');
+var outliers = require('./lib/outliers');
 
-console.log('testing ledger');
+var config = require('./config.json');
+
+function json_response(f) {
+    return function (req, res, next) {
+	res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+	f(req, res, next).then(function (result) {
+	    res.end(util.format('%j', result));
+	}, function (err) {
+	    res.statusCode = 500;
+	    res.end(err);
+	});
+    };
+}
+
+function req_params(req) {
+    return url.parse(req.url, true).query;
+}
+
+function validate_config(config) {
+    if (config.version !== 0) {
+	throw util.format('Unknown config version %s', config.version);
+    }
+
+    if (!config.ledgerfile) {
+	throw 'Supply the path to your ledger file in "config.json"';
+    }
+}
+
+validate_config(config);
 
 ledger.version().then(function (version) {
-    console.log(version);
+    console.log(util.format('Using ledger version: %s', version));
+    if (version[0] !== 3) {
+	throw util.format('Expecting ledger version >= 3, got %s', version);
+    }
 }).then(function () {
-    console.log('querying ledger');
-    return ledger.query(
-        '/Volumes/ACTIVEDOCS/financial/ledger.dat',
-        ['^Assets:Checking:ING', '^Liabilities:ING']
+    var ledger_file = config.ledgerfile,
+	port = 3000,
+	app;
+
+    app = connect()
+	.use(connect.static('./ui/static'))
+	.use(connectRoute(function (router) {
+
+	    var my_ledger = {
+		query: function (args) {
+		    return ledger.query(ledger_file, ['--period', '2013'].concat(args || []));
+		}
+	    };
+
+
+	    /*jslint unparam:true*/
+	    router.get('/v1/ledger', function (req, res, next) {
+		res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+		my_ledger.query(
+		    ['^Assets:Checking:ING', '^Liabilities:ING']
+		).done(function (ledger) {
+		    res.end(util.format('%j', ledger));
+		});
+	    });
+
+	    router.get('/v1/odd_payees', json_response(function (req, res, next) {
+		function ExpensesLedger(my_ledger) {
+		    this.my_ledger = my_ledger;
+		}
+
+		ExpensesLedger.prototype.query = function (args) {
+		    return this.my_ledger.query(['^Expenses'].concat(args || []));
+		};
+
+		function IncomeLedger(my_ledger) {
+		    this.my_ledger = my_ledger;
+		}
+
+		IncomeLedger.prototype.query = function (args) {
+		    return this.my_ledger.query(['^Income'].concat(args || []));
+		};
+
+		var params = req_params(req),
+		    limit = params.limit || 5;
+		return when.join(
+		    outliers.payees_by_count(new ExpensesLedger(my_ledger), limit),
+		    outliers.payees_by_count(new IncomeLedger(my_ledger), limit)
+		).then(function (values) {
+		    return {
+			expenses_by_count: values[0],
+			income_by_count: values[1]
+		    };
+		});
+	    }));
+	}));
+
+
+    http.createServer(app).listen(port);
+    return util.format(
+	'started web server at port %d\n\thttp://localhost:%d',
+	port,
+	port
     );
-}).then(function (data) {
-    console.log(data);
-}, function (err) {
+}).then(console.log, function (err) {
     console.log(err.stack);
 });

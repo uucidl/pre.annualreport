@@ -3,4 +3,10 @@
 
 HERE="$(dirname "$0")"
 
-npm install && npm run-script lint && npm run-script test
+npm install &&
+npm run-script lint &&
+npm run-script css-lint &&
+npm run-script html-lint &&
+npm run-script test &&
+npm run-script package-ui-code &&
+npm run-script doc

@@ -1,0 +1,20 @@
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #c8c8c3;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.red {
+    fill: #c84842;
+    color: #c84842;
+}
+
+.black {
+    fill: #c8c8c3;
+    color: #c8c8c3;
+}

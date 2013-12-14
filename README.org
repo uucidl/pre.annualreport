@@ -1,1 +1,7 @@
-WIP, using js + ledger to produce an annual financial report
+Using js + ledger to produce an annual financial report
+
+1) mv example-config.json config.json
+2) customize config.json
+3) npm start
+3) http://localhost:3000
+

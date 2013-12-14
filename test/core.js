@@ -16,13 +16,11 @@ describe('ledger', function () {
             return when.resolve(['', null]);
         }
 
-        ledger.version(mock_ledger).done(function (version) {
+        ledger.version(mock_ledger).then(function (version) {
             assert.ok(false, util.format('we expected an error and got %s instead', version));
-            done();
         }, function () {
             assert.ok(true, 'hurray!');
-            done();
-        });
+        }).then(done, done);
     });
 
     function test_a_version(version_string, expected, done) {
@@ -117,6 +115,27 @@ describe('ledger', function () {
             );
 
             console.log(postings);
+        }).then(done, done);
+    });
+
+    it('should read all the text of elements with space', function (done) {
+        var payee_name = "this is a long payee name";
+        function mock_ledger() {
+            /*jslint stupid:true*/
+            return when.resolve([
+                "<ledger version='196608'>"+
+                    "<transactions>"+
+                    "<transaction>"+
+                    util.format("<payee>%s</payee>", payee_name)+
+                    "</transaction>"+
+                    "</transactions>"+
+                    "</ledger>",
+                null
+            ]);
+        }
+
+        ledger.query('fake-file', [], mock_ledger).then(function (result) {
+            assert.equal(payee_name, result.transactions[0].payee);
         }).then(done, done);
     });
 });
