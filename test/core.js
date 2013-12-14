@@ -123,12 +123,12 @@ describe('ledger', function () {
         function mock_ledger() {
             /*jslint stupid:true*/
             return when.resolve([
-                "<ledger version='196608'>"+
-                    "<transactions>"+
-                    "<transaction>"+
-                    util.format("<payee>%s</payee>", payee_name)+
-                    "</transaction>"+
-                    "</transactions>"+
+                "<ledger version='196608'>" +
+                    "<transactions>" +
+                    "<transaction>" +
+                    util.format("<payee>%s</payee>", payee_name) +
+                    "</transaction>" +
+                    "</transactions>" +
                     "</ledger>",
                 null
             ]);

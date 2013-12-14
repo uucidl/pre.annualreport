@@ -10,17 +10,27 @@
   <body>
     <H1>2013 Annual Report</H1>
 
-    <H2>Payees by frequency</H2>
-    <div id="freq_payees"></div>
+    <H2>Payees</H2>
+    <H3>By amount</H3>
+    <div id="payee-income_by_amount"></div>
+    <div id="payee-expenses_by_amount"></div>
+    <H3>By frequency</H3>
+    <div id="payee-income_by_count"></div>
+    <div id="payee-expenses_by_count"></div>
 
-    <div id="console"></div>
+    <div id="console" class="footnote"></div>
     <script type="text/javascript">
       var Console = require('./ui/console').Console;
       var main = require('./ui/main');
       var uiconsole = new Console(document.getElementById("console"));
 
       uiconsole.say('Loading...');
-      main.load(uiconsole, document.getElementById('freq_payees'));
+      main.load(uiconsole, {
+	  'income_by_count':    document.getElementById('payee-income_by_count'),
+	  'expenses_by_count':  document.getElementById('payee-expenses_by_count'),
+	  'income_by_amount':   document.getElementById('payee-income_by_amount'),
+	  'expenses_by_amount': document.getElementById('payee-expenses_by_amount'),
+      });
     </script>
   </body>
 </html>

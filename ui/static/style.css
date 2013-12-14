@@ -13,6 +13,12 @@ H1, H2 {
     color: #c84842;
 }
 
+.footnote {
+    margin-top: 3em;
+    font-size: 66%;
+    font-weight: italic;
+}
+
 .balance {
     margin-top: 1em;
     margin-bottom: 1em;

@@ -4,6 +4,8 @@
 
 var assert = require('assert');
 var when = require('when');
+var BigNum = require('bignumber.js');
+var ledger = require('../lib/io/jw-ledger');
 
 describe('outliers', function () {
     var outliers = require('../lib/outliers');
@@ -24,12 +26,17 @@ describe('outliers', function () {
     });
 
     it('should identify elements contribution to an average', function (done) {
-        console.log(outliers.contributors_to_average(outliers.contributors_to_average({
-            a: 1,
-            b: 1000,
-            c: 1,
-            d: 1
-        })));
+        assert.deepEqual(
+            ['b'],
+            outliers.top_contributors({
+                a: 1,
+                b: -1000,
+                c: 1,
+                d: 1
+            }, 1).map(function (e) {
+                return e.key;
+            })
+        );
         done();
     });
 
@@ -56,7 +63,30 @@ describe('outliers', function () {
         }, 1).then(function (payees) {
             assert.deepEqual([
                 'B',
-            ], payees.sort());
+            ], payees);
+        }).then(done, done);
+    });
+
+    it('should identify the most odd payees by amount', function (done) {
+        function posting(qty, commodity) {
+            return [ { amount: ledger.amount(qty, commodity) } ];
+        }
+        var dataset = {
+            transactions: [
+                { payee: 'A', postings: posting(12, '€') },
+                { payee: 'B', postings: posting(12, '€') },
+                { payee: 'B', postings: posting(1200, '¥') },
+                { payee: 'C', postings: posting(-28, '€') },
+                { payee: 'C', postings: posting(-60.21, '€') }
+            ]
+        };
+
+        outliers.payees_by_amount({
+            query: function () {
+                return when.resolve(dataset);
+            }
+        }, 1).then(function (payees) {
+            assert.deepEqual(['C'], payees);
         }).then(done, done);
     });
 });
