@@ -8,24 +8,31 @@
     <script type="text/javascript" src="/code.js"></script>
   </head>
   <body>
-    <H1>2013 Annual Report</H1>
+    <div class="main">
+      <H1>2013 Annual Report</H1>
 
-    <H2>Payees</H2>
-    <H3>By amount</H3>
-    <ul id="payee-income_by_amount"></ul>
-    <ul id="payee-expenses_by_amount"></ul>
-    <H3>By frequency</H3>
-    <ul id="payee-income_by_count"></ul>
-    <ul id="payee-expenses_by_count"></ul>
+      <div class="grid grid-top">
+	<div class="grid-cell">
+	  <H2>Payees</H2>
+	  <H3>By amount</H3>
+	  <ul id="payee-income_by_amount"></ul>
+	  <ul id="payee-expenses_by_amount"></ul>
+	  <H3>By frequency</H3>
+	  <ul id="payee-income_by_count"></ul>
+	  <ul id="payee-expenses_by_count"></ul>
+	</div>
 
-    <H2>Accounts</H2>
-    <H3>By amount</H3>
-    <ul id="account-income_by_amount"></ul>
-    <ul id="account-expenses_by_amount"></ul>
-    <H3>By frequency</H3>
-    <ul id="account-income_by_count"></ul>
-    <ul id="account-expenses_by_count"></ul>
-
+	<div class="grid-cell">
+	  <H2>Accounts</H2>
+	  <H3>By amount</H3>
+	  <ul id="account-income_by_amount"></ul>
+	  <ul id="account-expenses_by_amount"></ul>
+	  <H3>By frequency</H3>
+	  <ul id="account-income_by_count"></ul>
+	  <ul id="account-expenses_by_count"></ul>
+	</div>
+      </div>
+    </div>
     <div id="console" class="footnote"></div>
     <script type="text/javascript" src="/index.js"></script>
   </body>

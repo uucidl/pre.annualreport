@@ -2,6 +2,34 @@ body {
     font-family: Puritan, Georgia;
     color: #c8c8c3;
     background: #222233;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid-cell {
+    flex: 1;
+}
+
+.grid-top {
+    align-items: flex-start;
+}
+
+.main > H1 {
+    margin-top:    0;
+}
+
+.grid-cell > H2 {
+    margin-top: 0;
 }
 
 H1, H2 {
