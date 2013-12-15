@@ -52,8 +52,9 @@ ledger.version().then(function (version) {
         my_ledger;
 
     my_ledger = {
+        cache: {},
         query: function (args) {
-            return ledger.query(ledger_file, args || []);
+            return ledger.query(ledger_file, args || [], null, this.cache);
         }
     };
 
@@ -78,8 +79,6 @@ ledger.version().then(function (version) {
     app = connect()
         .use(connect.static('./ui/static'))
         .use(connectRoute(function (router) {
-
-
             /*jslint unparam:true*/
             router.get('/v1/ledger', function (req, res, next) {
                 res.setHeader('Content-Type', 'text/plain; charset=utf-8');

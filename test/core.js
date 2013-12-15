@@ -138,4 +138,31 @@ describe('ledger', function () {
             assert.equal(payee_name, result.transactions[0].payee);
         }).then(done, done);
     });
+
+    it('should optionally fetch results from a cache', function (done) {
+        var cache = {};
+
+        function mock_ledger() {
+            /*jslint stupid:true*/
+            return when.resolve([
+                "<ledger version='196608'>" +
+                    "<transactions>" +
+                    "<transaction>" +
+                    "<payee>Hello</payee>" +
+                    "</transaction>" +
+                    "</transactions>" +
+                    "</ledger>",
+                null
+            ]);
+        }
+
+        ledger.query('fake-file', [], mock_ledger, cache).then(function (result) {
+            var first_result = result;
+            assert.ok(result.transactions.length === 1);
+
+            return ledger.query('fake-file', [], null, cache).then(function (result) {
+                assert.deepEqual(first_result, result);
+            });
+        }).then(done, done);
+    });
 });
