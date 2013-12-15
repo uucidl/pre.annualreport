@@ -3,7 +3,8 @@ var main = require('./ui/main');
 var uiconsole = new Console(document.getElementById("console"));
 
 uiconsole.say('Loading...');
-main.load(uiconsole,
+main.load(document.getElementById('year').textContent,
+	  uiconsole,
 	  {
 	      'income_by_count':    document.getElementById('payee-income_by_count'),
 	      'expenses_by_count':  document.getElementById('payee-expenses_by_count'),

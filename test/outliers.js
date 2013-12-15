@@ -62,7 +62,7 @@ describe('outliers', function () {
             }
         }, 1).then(function (payees) {
             assert.deepEqual([
-                'B',
+                { name: 'B', total: 5 },
             ], payees);
         }).then(done, done);
     });
@@ -86,7 +86,7 @@ describe('outliers', function () {
                 return when.resolve(dataset);
             }
         }, 1).then(function (payees) {
-            assert.deepEqual(['C'], payees);
+            assert.deepEqual([{name: 'C', total: -88.21 }], payees);
         }).then(done, done);
     });
 });

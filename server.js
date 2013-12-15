@@ -53,24 +53,26 @@ ledger.version().then(function (version) {
 
     my_ledger = {
         query: function (args) {
-            return ledger.query(ledger_file, ['--period', '2013'].concat(args || []));
+            return ledger.query(ledger_file, args || []);
         }
     };
 
-    function ExpensesLedger() {
+    function ExpensesLedger(period) {
         this.my_ledger = my_ledger;
+        this.period = period;
     }
 
     ExpensesLedger.prototype.query = function (args) {
-        return this.my_ledger.query(['^Expenses'].concat(args || []));
+        return this.my_ledger.query(['--period', this.period, '^Expenses'].concat(args || []));
     };
 
-    function IncomeLedger(my_ledger) {
+    function IncomeLedger(period) {
         this.my_ledger = my_ledger;
+        this.period = period;
     }
 
     IncomeLedger.prototype.query = function (args) {
-        return this.my_ledger.query(['^Income'].concat(args || []));
+        return this.my_ledger.query(['--period', this.period, '^Income'].concat(args || []));
     };
 
     app = connect()
@@ -90,12 +92,13 @@ ledger.version().then(function (version) {
 
             router.get('/v1/odd_payees', json_response(function (req, res, next) {
                 var params = req_params(req),
-                    limit = params.limit || 5;
+                    limit = params.limit || 5,
+                    period = params.period || "2013";
                 return when.join(
-                    outliers.payees_by_count(new ExpensesLedger(my_ledger), limit),
-                    outliers.payees_by_count(new IncomeLedger(my_ledger), limit),
-                    outliers.payees_by_amount(new ExpensesLedger(my_ledger), limit),
-                    outliers.payees_by_amount(new IncomeLedger(my_ledger), limit)
+                    outliers.payees_by_count(new ExpensesLedger(period), limit),
+                    outliers.payees_by_count(new IncomeLedger(period), limit),
+                    outliers.payees_by_amount(new ExpensesLedger(period), limit),
+                    outliers.payees_by_amount(new IncomeLedger(period), limit)
                 ).then(function (values) {
                     return when.resolve({
                         expenses_by_count: values[0],
@@ -108,12 +111,13 @@ ledger.version().then(function (version) {
 
             router.get('/v1/odd_accounts', json_response(function (req, res, next) {
                 var params = req_params(req),
-                    limit = params.limit || 5;
+                    limit = params.limit || 5,
+                    period = params.period || "2013";
                 return when.join(
-                    outliers.accounts_by_count(new ExpensesLedger(my_ledger), limit),
-                    outliers.accounts_by_count(new IncomeLedger(my_ledger), limit),
-                    outliers.accounts_by_amount(new ExpensesLedger(my_ledger), limit),
-                    outliers.accounts_by_amount(new IncomeLedger(my_ledger), limit)
+                    outliers.accounts_by_count(new ExpensesLedger(period), limit),
+                    outliers.accounts_by_count(new IncomeLedger(period), limit),
+                    outliers.accounts_by_amount(new ExpensesLedger(period), limit),
+                    outliers.accounts_by_amount(new IncomeLedger(period), limit)
                 ).then(function (values) {
                     return when.resolve({
                         expenses_by_count: values[0],

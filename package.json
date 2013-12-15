@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "scripts": {
 	"test": "mocha",
-	"lint": "jslint *.js lib/io/*.js ui/*.js test/*.js",
+	"lint": "jslint *.js lib/*.js lib/io/*.js ui/*.js test/*.js",
 	"html-lint": "node ./html5check.js ui/static/*.html",
 	"css-lint": "recess ui/static/*.css",
 	"package-ui-code": "browserify -r ./ui/main -r ./ui/console -o ui/static/code.js",

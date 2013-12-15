@@ -1,6 +1,7 @@
 "use strict";
 
 var d3 = require('d3');
+var util = require('util');
 
 function attach_list(selection, list) {
     selection
@@ -8,11 +9,21 @@ function attach_list(selection, list) {
         .data(list)
         .enter()
         .append('li')
-        .text(function (d) { return d; });
+        .text(function (d) { return d.name + " "; })
+        .append("span")
+        .text(function (d) { return d.total; });
 }
 
-function load(uiconsole, payee_elements, account_elements) {
-    d3.json('http://localhost:3000/v1/odd_payees?limit=5', function (json) {
+function load(period, uiconsole, payee_elements, account_elements) {
+    var odd_payees_url = util.format(
+            'http://localhost:3000/v1/odd_payees?limit=5&period=%d',
+            period
+        ),
+        odd_accounts_url = util.format(
+            'http://localhost:3000/v1/odd_accounts?limit=5&period=%d',
+            period
+        );
+    d3.json(odd_payees_url, function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 payee_elements[key]
@@ -27,7 +38,7 @@ function load(uiconsole, payee_elements, account_elements) {
         uiconsole.say('Loaded payees');
     });
 
-    d3.json('http://localhost:3000/v1/odd_accounts?limit=5', function (json) {
+    d3.json(odd_accounts_url, function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 account_elements[key]
