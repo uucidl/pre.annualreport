@@ -11,7 +11,7 @@ function attach_list(selection, list) {
         .append('li')
         .text(function (d) { return d.name + " "; })
         .append("span")
-        .text(function (d) { return d.total; });
+        .text(function (d) { return Math.round(d.total) + " " + d.unit; });
 }
 
 function load(period, uiconsole, payee_elements, account_elements) {
