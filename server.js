@@ -48,17 +48,34 @@ ledger.version().then(function (version) {
 }).then(function () {
     var ledger_file = config.ledgerfile,
         port = 3000,
-        app;
+        app,
+        my_ledger;
+
+    my_ledger = {
+        query: function (args) {
+            return ledger.query(ledger_file, ['--period', '2013'].concat(args || []));
+        }
+    };
+
+    function ExpensesLedger() {
+        this.my_ledger = my_ledger;
+    }
+
+    ExpensesLedger.prototype.query = function (args) {
+        return this.my_ledger.query(['^Expenses'].concat(args || []));
+    };
+
+    function IncomeLedger(my_ledger) {
+        this.my_ledger = my_ledger;
+    }
+
+    IncomeLedger.prototype.query = function (args) {
+        return this.my_ledger.query(['^Income'].concat(args || []));
+    };
 
     app = connect()
         .use(connect.static('./ui/static'))
         .use(connectRoute(function (router) {
-
-            var my_ledger = {
-                query: function (args) {
-                    return ledger.query(ledger_file, ['--period', '2013'].concat(args || []));
-                }
-            };
 
 
             /*jslint unparam:true*/
@@ -72,22 +89,6 @@ ledger.version().then(function (version) {
             });
 
             router.get('/v1/odd_payees', json_response(function (req, res, next) {
-                function ExpensesLedger(my_ledger) {
-                    this.my_ledger = my_ledger;
-                }
-
-                ExpensesLedger.prototype.query = function (args) {
-                    return this.my_ledger.query(['^Expenses'].concat(args || []));
-                };
-
-                function IncomeLedger(my_ledger) {
-                    this.my_ledger = my_ledger;
-                }
-
-                IncomeLedger.prototype.query = function (args) {
-                    return this.my_ledger.query(['^Income'].concat(args || []));
-                };
-
                 var params = req_params(req),
                     limit = params.limit || 5;
                 return when.join(
@@ -95,6 +96,24 @@ ledger.version().then(function (version) {
                     outliers.payees_by_count(new IncomeLedger(my_ledger), limit),
                     outliers.payees_by_amount(new ExpensesLedger(my_ledger), limit),
                     outliers.payees_by_amount(new IncomeLedger(my_ledger), limit)
+                ).then(function (values) {
+                    return when.resolve({
+                        expenses_by_count: values[0],
+                        income_by_count: values[1],
+                        expenses_by_amount: values[2],
+                        income_by_amount: values[3]
+                    });
+                });
+            }));
+
+            router.get('/v1/odd_accounts', json_response(function (req, res, next) {
+                var params = req_params(req),
+                    limit = params.limit || 5;
+                return when.join(
+                    outliers.accounts_by_count(new ExpensesLedger(my_ledger), limit),
+                    outliers.accounts_by_count(new IncomeLedger(my_ledger), limit),
+                    outliers.accounts_by_amount(new ExpensesLedger(my_ledger), limit),
+                    outliers.accounts_by_amount(new IncomeLedger(my_ledger), limit)
                 ).then(function (values) {
                     return when.resolve({
                         expenses_by_count: values[0],

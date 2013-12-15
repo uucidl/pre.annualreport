@@ -12,25 +12,21 @@
 
     <H2>Payees</H2>
     <H3>By amount</H3>
-    <div id="payee-income_by_amount"></div>
-    <div id="payee-expenses_by_amount"></div>
+    <ul id="payee-income_by_amount"></ul>
+    <ul id="payee-expenses_by_amount"></ul>
     <H3>By frequency</H3>
-    <div id="payee-income_by_count"></div>
-    <div id="payee-expenses_by_count"></div>
+    <ul id="payee-income_by_count"></ul>
+    <ul id="payee-expenses_by_count"></ul>
+
+    <H2>Accounts</H2>
+    <H3>By amount</H3>
+    <ul id="account-income_by_amount"></ul>
+    <ul id="account-expenses_by_amount"></ul>
+    <H3>By frequency</H3>
+    <ul id="account-income_by_count"></ul>
+    <ul id="account-expenses_by_count"></ul>
 
     <div id="console" class="footnote"></div>
-    <script type="text/javascript">
-      var Console = require('./ui/console').Console;
-      var main = require('./ui/main');
-      var uiconsole = new Console(document.getElementById("console"));
-
-      uiconsole.say('Loading...');
-      main.load(uiconsole, {
-	  'income_by_count':    document.getElementById('payee-income_by_count'),
-	  'expenses_by_count':  document.getElementById('payee-expenses_by_count'),
-	  'income_by_amount':   document.getElementById('payee-income_by_amount'),
-	  'expenses_by_amount': document.getElementById('payee-expenses_by_amount'),
-      });
-    </script>
+    <script type="text/javascript" src="/index.js"></script>
   </body>
 </html>
