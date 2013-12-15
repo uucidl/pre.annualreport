@@ -80,15 +80,6 @@ ledger.version().then(function (version) {
         .use(connect.static('./ui/static'))
         .use(connectRoute(function (router) {
             /*jslint unparam:true*/
-            router.get('/v1/ledger', function (req, res, next) {
-                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-                my_ledger.query(
-                    ['^Assets:Checking:ING', '^Liabilities:ING']
-                ).done(function (ledger) {
-                    res.end(util.format('%j', ledger));
-                });
-            });
-
             router.get('/v1/odd_payees', json_response(function (req, res, next) {
                 var params = req_params(req),
                     limit = params.limit || 5,
