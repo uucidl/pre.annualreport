@@ -17,6 +17,22 @@ body {
     flex: 1;
 }
 
+.grid-cell-1-of-8 {
+    flex: 0 0 12.5%;
+}
+
+.grid-cell-1-of-16 {
+    flex: 0 0 6.25%;
+}
+
+.grid-with-gutter {
+    margin-left: -1em;
+}
+
+.grid-with-gutter > .grid-cell {
+    padding-left: 1em;
+}
+
 .grid-top {
     align-items: flex-start;
 }

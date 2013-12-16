@@ -2,6 +2,7 @@
 
 var d3 = require('d3');
 var util = require('util');
+var querystring = require('querystring');
 
 function attach_list(selection, list) {
     var rows = selection
@@ -16,24 +17,20 @@ function attach_list(selection, list) {
         .text(function (d) { return Math.round(d.total) + " " + d.unit; });
 }
 
-function load(period, uiconsole, payee_elements, account_elements) {
-    var odd_payees_url = util.format(
-            'http://localhost:3000/v1/odd_payees?limit=5&period=%d',
-            period
-        ),
-        odd_accounts_url = util.format(
-            'http://localhost:3000/v1/odd_accounts?limit=5&period=%d',
-            period
-        );
+function load(period, uiconsole, payee_elements, account_elements, flows_elements) {
+    function api_url(service, params) {
+        return util.format('http://localhost:3000/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
+    }
+
+    var odd_payees_url = api_url("odd_payees", { limit: 5, period: period }),
+        odd_accounts_url = api_url("odd_accounts", { limit: 5, period: period }),
+        flows_url = api_url("flows", { period: period });
+
     d3.json(odd_payees_url, function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 payee_elements[key]
             );
-
-            if (key.match(/^expenses/)) {
-                selection.classed('liabilities', true);
-            }
 
             attach_list(selection, json[key]);
         });
@@ -46,13 +43,20 @@ function load(period, uiconsole, payee_elements, account_elements) {
                 account_elements[key]
             );
 
-            if (key.match(/^expenses/)) {
-                selection.classed('liabilities', true);
-            }
-
             attach_list(selection, json[key]);
         });
         uiconsole.say('Loaded accounts');
+    });
+
+    d3.json(flows_url, function (json) {
+        if (!json) {
+            uiconsole.say('could not load flows');
+        }
+        Object.keys(json).forEach(function (key) {
+            var selection = d3.select(flows_elements[key]);
+            selection.text(Math.round(json[key]));
+        });
+        uiconsole.say('Loaded flows');
     });
 }
 

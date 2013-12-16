@@ -8,7 +8,7 @@ a:visited {
     color: #9999AA;
 }
 
-td.number {
+div.number, td.number {
     text-align: right;
 }
 

@@ -12,18 +12,28 @@
     <div class="main">
       <H1><span id="year">2013</span> Annual Report</H1>
 
-      <div class="grid grid-top">
+      <div class="grid grid-top grid-with-gutter">
+	<div class="grid-cell grid-cell-1-of-16">
+	  <H2>Flows</H2>
+	  <H3>Amounts</H3>
+	  <div id="total-income" class="number"></div>
+	  <div id="total-expenses" class="number liabilities"></div>
+	  <H3>Counts</H3>
+	  <div id="count-income" class="number"></div>
+	  <div id="count-expenses" class="number liabilities"></div>
+	</div>
+
 	<div class="grid-cell">
 	  <H2>Payees</H2>
 	  <H3>By amount</H3>
 	  <table>
 	    <tbody id="payee-income_by_amount"></tbody>
-	    <tbody id="payee-expenses_by_amount"></tbody>
+	    <tbody id="payee-expenses_by_amount" class="liabilities"></tbody>
 	  </table>
-	  <H3>By frequency</H3>
+	  <H3>By count</H3>
 	  <table>
 	    <tbody id="payee-income_by_count"></tbody>
-	    <tbody id="payee-expenses_by_count"></tbody>
+	    <tbody id="payee-expenses_by_count" class="liabilities"></tbody>
 	  </table>
 	</div>
 
@@ -32,12 +42,12 @@
 	  <H3>By amount</H3>
 	  <table>
 	    <tbody id="account-income_by_amount"></tbody>
-	    <tbody id="account-expenses_by_amount"></tbody>
+	    <tbody id="account-expenses_by_amount" class="liabilities"></tbody>
 	  </table>
-	  <H3>By frequency</H3>
+	  <H3>By count</H3>
 	  <table>
 	    <tbody id="account-income_by_count"></tbody>
-	    <tbody id="account-expenses_by_count"></tbody>
+	    <tbody id="account-expenses_by_count" class="liabilities"></tbody>
 	  </table>
 	</div>
       </div>

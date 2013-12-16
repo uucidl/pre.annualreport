@@ -9,7 +9,7 @@ var when = require('when');
 
 var ledger = require('./lib/io/jw-ledger');
 var outliers = require('./lib/outliers');
-
+var balance = require('./lib/balance');
 var config = require('./config.json');
 
 function json_response(f) {
@@ -125,6 +125,30 @@ ledger.version().then(function (version) {
                         income_by_count: values[1],
                         expenses_by_amount: values[2],
                         income_by_amount: values[3]
+                    });
+                });
+            }));
+
+            router.get('/v1/flows', json_response(function (req, res, next) {
+                var params = req_params(req),
+                    period = params.period;
+
+                if (!period) {
+                    throw 'Missing period parameter';
+                }
+
+                return when.join(
+                    new ExpensesLedger(period).query(),
+                    new IncomeLedger(period).query()
+                ).then(function (ledgers) {
+                    var expenses = balance.balances(ledgers[0]),
+                        incomes  = balance.balances(ledgers[1]);
+
+                    return when.resolve({
+                        expenses: parseFloat(expenses['€'] || 0.0),
+                        incomes: parseFloat(incomes['€'] || 0.0),
+                        expenses_count: ledgers[0].transactions.length,
+                        incomes_count: ledgers[1].transactions.length
                     });
                 });
             }));
