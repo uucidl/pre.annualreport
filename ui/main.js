@@ -11,7 +11,9 @@ function attach_list(selection, list) {
         .append('tr');
 
     rows.append('td').text(function (d) { return d.name + " "; });
-    rows.append('td').text(function (d) { return Math.round(d.total) + " " + d.unit; });
+    rows.append('td')
+        .classed("number", true)
+        .text(function (d) { return Math.round(d.total) + " " + d.unit; });
 }
 
 function load(period, uiconsole, payee_elements, account_elements) {

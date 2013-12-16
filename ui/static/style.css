@@ -2,34 +2,14 @@ body {
     font-family: Puritan, Georgia;
     color: #c8c8c3;
     background: #222233;
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
 }
 
-main {
-    flex: 1;
+a:visited {
+    color: #9999AA;
 }
 
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.grid-cell {
-    flex: 1;
-}
-
-.grid-top {
-    align-items: flex-start;
-}
-
-.main > H1 {
-    margin-top:    0;
-}
-
-.grid-cell > H2 {
-    margin-top: 0;
+td.number {
+    text-align: right;
 }
 
 H1, H2 {
@@ -39,12 +19,6 @@ H1, H2 {
 
 .liabilities {
     color: #c84842;
-}
-
-.footnote {
-    margin-top: 3em;
-    font-size: 66%;
-    font-weight: italic;
 }
 
 .balance {
@@ -59,4 +33,9 @@ H1, H2 {
 
 .balance span {
     margin-left: 2em;
+}
+
+.footnote {
+    font-size: 66%;
+    font-style: italic;
 }
