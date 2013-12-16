@@ -4,14 +4,14 @@ var d3 = require('d3');
 var util = require('util');
 
 function attach_list(selection, list) {
-    selection
-        .selectAll('li')
+    var rows = selection
+        .selectAll('tr')
         .data(list)
         .enter()
-        .append('li')
-        .text(function (d) { return d.name + " "; })
-        .append("span")
-        .text(function (d) { return Math.round(d.total) + " " + d.unit; });
+        .append('tr');
+
+    rows.append('td').text(function (d) { return d.name + " "; });
+    rows.append('td').text(function (d) { return Math.round(d.total) + " " + d.unit; });
 }
 
 function load(period, uiconsole, payee_elements, account_elements) {
