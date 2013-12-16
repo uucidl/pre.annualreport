@@ -15,11 +15,12 @@ var config = require('./config.json');
 function json_response(f) {
     return function (req, res, next) {
         res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        f(req, res, next).then(function (result) {
+        f(req, res, next).done(function (result) {
             res.end(util.format('%j', result));
         }, function (err) {
             res.statusCode = 500;
-            res.end(err);
+            res.end(util.format('%s', err));
+            console.log(util.format('ERR %s: [%s]', res.statusCode, err));
         });
     };
 }
