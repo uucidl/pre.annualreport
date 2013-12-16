@@ -84,7 +84,12 @@ ledger.version().then(function (version) {
             router.get('/v1/odd_payees', json_response(function (req, res, next) {
                 var params = req_params(req),
                     limit = params.limit || 5,
-                    period = params.period || "2013";
+                    period = params.period;
+
+                if (!period) {
+                    throw 'Missing period parameter';
+                }
+
                 return when.join(
                     outliers.payees_by_count(new ExpensesLedger(period), limit),
                     outliers.payees_by_count(new IncomeLedger(period), limit),
@@ -103,7 +108,12 @@ ledger.version().then(function (version) {
             router.get('/v1/odd_accounts', json_response(function (req, res, next) {
                 var params = req_params(req),
                     limit = params.limit || 5,
-                    period = params.period || "2013";
+                    period = params.period;
+
+                if (!period) {
+                    throw 'Missing period parameter';
+                }
+
                 return when.join(
                     outliers.accounts_by_count(new ExpensesLedger(period), limit),
                     outliers.accounts_by_count(new IncomeLedger(period), limit),
