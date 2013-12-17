@@ -17,6 +17,15 @@ H1, H2 {
     font-weight: bold;
 }
 
+td + td {
+    padding-left: 1em;
+}
+
+td.linked {
+    padding-left: 0;
+}
+
+
 .liabilities {
     color: #c84842;
 }

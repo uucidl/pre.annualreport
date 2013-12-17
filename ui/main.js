@@ -14,7 +14,10 @@ function attach_list(selection, list) {
     rows.append('td').text(function (d) { return d.name + " "; });
     rows.append('td')
         .classed("number", true)
-        .text(function (d) { return Math.round(d.total) + " " + d.unit; });
+        .text(function (d) { return Math.round(d.total); });
+    rows.append('td')
+        .classed('linked', true)
+        .text(function (d) { return d.unit; });
 }
 
 function load(period, uiconsole, payee_elements, account_elements, flows_elements) {
@@ -54,7 +57,7 @@ function load(period, uiconsole, payee_elements, account_elements, flows_element
         }
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(flows_elements[key]);
-            selection.text(Math.round(json[key]));
+            attach_list(selection, json[key]);
         });
         uiconsole.say('Loaded flows');
     });

@@ -142,13 +142,49 @@ ledger.version().then(function (version) {
                     new IncomeLedger(period).query()
                 ).then(function (ledgers) {
                     var expenses = balance.balances(ledgers[0]),
-                        incomes  = balance.balances(ledgers[1]);
+                        incomes  = balance.balances(ledgers[1]),
+                        expenses_list,
+                        incomes_list,
+                        expenses_count_list,
+                        incomes_count_list;
+
+                    expenses_list = Object.keys(expenses).reduce(function (list, key) {
+                        return list.concat(
+                            [{ name: 'Expenses', total: parseFloat(expenses[key].total), unit: key } ]
+                        );
+                    }, []);
+
+                    incomes_list = Object.keys(incomes).reduce(function (list, key) {
+                        return list.concat(
+                            [{ name: 'Incomes', total: parseFloat(incomes[key].total), unit: key } ]
+                        );
+                    }, []);
+
+                    expenses_count_list = Object.keys(expenses).reduce(function (list, key) {
+                        return list.concat(
+                            [{
+                                name: 'Expenses (' + key + ')',
+                                total: expenses[key].count,
+                                unit: ''
+                            }]
+                        );
+                    }, []);
+
+                    incomes_count_list = Object.keys(incomes).reduce(function (list, key) {
+                        return list.concat(
+                            [{
+                                name: 'Income (' + key + ')',
+                                total: incomes[key].count,
+                                unit: ''
+                            }]
+                        );
+                    }, []);
 
                     return when.resolve({
-                        expenses: parseFloat(expenses['€'] || 0.0),
-                        incomes: parseFloat(incomes['€'] || 0.0),
-                        expenses_count: ledgers[0].transactions.length,
-                        incomes_count: ledgers[1].transactions.length
+                        expenses: expenses_list,
+                        incomes: incomes_list,
+                        expenses_count: expenses_count_list,
+                        incomes_count: incomes_count_list
                     });
                 });
             }));
