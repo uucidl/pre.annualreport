@@ -65,7 +65,9 @@ ledger.version().then(function (version) {
     }
 
     ExpensesLedger.prototype.query = function (args) {
-        return this.my_ledger.query(['--period', this.period, '^Expenses'].concat(args || []));
+        return this.my_ledger.query([
+            '--period', this.period, config['expense-account-re']
+        ].concat(args || []));
     };
 
     function IncomeLedger(period) {
@@ -74,7 +76,9 @@ ledger.version().then(function (version) {
     }
 
     IncomeLedger.prototype.query = function (args) {
-        return this.my_ledger.query(['--period', this.period, '^Income'].concat(args || []));
+        return this.my_ledger.query([
+            '--period', this.period, config['income-account-re']
+        ].concat(args || []));
     };
 
     app = connect()

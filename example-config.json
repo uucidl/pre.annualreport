@@ -1,4 +1,6 @@
 {
     "version": 0,
-    "ledgerfile": null
+    "ledgerfile": null,
+    "expense-account-re": "^Expenses:",
+    "income-account-re": "^Income:"
 }
