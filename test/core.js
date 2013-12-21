@@ -7,7 +7,6 @@ var ledger = require('../lib/io/jw-ledger');
 var util = require('util');
 var when = require('when');
 var fs = require('fs');
-var jsonQuery = require('json-query');
 var BigNum = require('bignumber.js');
 
 describe('ledger', function () {
