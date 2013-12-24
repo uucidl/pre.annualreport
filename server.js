@@ -50,36 +50,36 @@ ledger.version().then(function (version) {
     var ledger_file = config.ledgerfile,
         port = 3000,
         app,
-        my_ledger;
+        ledger_cache = {};
 
-    my_ledger = {
-        cache: {},
-        query: function (args) {
-            return ledger.query(ledger_file, args || [], null, this.cache);
-        }
-    };
-
-    function ExpensesLedger(period) {
-        this.my_ledger = my_ledger;
-        this.period = period;
+    function ledgerfor(period, account_re) {
+        return {
+            query: function (args) {
+                return ledger.query(
+                    ledger_file,
+                    [ '--period', period, account_re ].concat(args || []),
+                    null,
+                    ledger_cache
+                );
+            }
+        };
     }
 
-    ExpensesLedger.prototype.query = function (args) {
-        return this.my_ledger.query([
-            '--period', this.period, config['expense-account-re']
-        ].concat(args || []));
-    };
-
-    function IncomeLedger(period) {
-        this.my_ledger = my_ledger;
-        this.period = period;
+    function expenses_ledger(period) {
+        return ledgerfor(period, config['expense-account-re']);
     }
 
-    IncomeLedger.prototype.query = function (args) {
-        return this.my_ledger.query([
-            '--period', this.period, config['income-account-re']
-        ].concat(args || []));
-    };
+    function income_ledger(period) {
+        return ledgerfor(period, config['income-account-re']);
+    }
+
+    function liabilities_ledger(period) {
+        return ledgerfor(period, config['liabilities-account-re']);
+    }
+
+    function assets_ledger(period) {
+        return ledgerfor(period, config['assets-account-re']);
+    }
 
     app = connect()
         .use(connect.static('./ui/static'))
@@ -95,10 +95,10 @@ ledger.version().then(function (version) {
                 }
 
                 return when.join(
-                    outliers.payees_by_count(new ExpensesLedger(period), limit),
-                    outliers.payees_by_count(new IncomeLedger(period), limit),
-                    outliers.payees_by_amount(new ExpensesLedger(period), limit),
-                    outliers.payees_by_amount(new IncomeLedger(period), limit)
+                    outliers.payees_by_count(expenses_ledger(period), limit),
+                    outliers.payees_by_count(income_ledger(period), limit),
+                    outliers.payees_by_amount(expenses_ledger(period), limit),
+                    outliers.payees_by_amount(income_ledger(period), limit)
                 ).then(function (values) {
                     return when.resolve({
                         expenses_by_count: values[0],
@@ -119,10 +119,10 @@ ledger.version().then(function (version) {
                 }
 
                 return when.join(
-                    outliers.accounts_by_count(new ExpensesLedger(period), limit),
-                    outliers.accounts_by_count(new IncomeLedger(period), limit),
-                    outliers.accounts_by_amount(new ExpensesLedger(period), limit),
-                    outliers.accounts_by_amount(new IncomeLedger(period), limit)
+                    outliers.accounts_by_count(expenses_ledger(period), limit),
+                    outliers.accounts_by_count(income_ledger(period), limit),
+                    outliers.accounts_by_amount(expenses_ledger(period), limit),
+                    outliers.accounts_by_amount(income_ledger(period), limit)
                 ).then(function (values) {
                     return when.resolve({
                         expenses_by_count: values[0],
@@ -142,53 +142,57 @@ ledger.version().then(function (version) {
                 }
 
                 return when.join(
-                    new ExpensesLedger(period).query(),
-                    new IncomeLedger(period).query()
+                    expenses_ledger(period).query(),
+                    income_ledger(period).query(),
+                    assets_ledger(period).query(),
+                    liabilities_ledger(period).query()
                 ).then(function (ledgers) {
+                    function tuple_list_by_key(map, tuple_name) {
+                        return Object.keys(map).reduce(function (list, key) {
+                            if (map[key].total.isZero()) {
+                                return list;
+                            }
+
+                            return list.concat(
+                                [{ name: tuple_name, total: parseFloat(map[key].total), unit: key } ]
+                            );
+                        }, []);
+                    }
+
+                    function tuple_list_count_by_key(map, tuple_name_pattern) {
+                        return Object.keys(map).reduce(function (list, key) {
+                            return list.concat(
+                                [{
+                                    name: util.format(tuple_name_pattern, key),
+                                    total: map[key].count,
+                                    unit: ''
+                                }]
+                            );
+                        }, []);
+                    }
+
                     var expenses = balance.balances(ledgers[0]),
                         incomes  = balance.balances(ledgers[1]),
-                        expenses_list,
-                        incomes_list,
-                        expenses_count_list,
-                        incomes_count_list;
-
-                    expenses_list = Object.keys(expenses).reduce(function (list, key) {
-                        return list.concat(
-                            [{ name: 'Expenses', total: parseFloat(expenses[key].total), unit: key } ]
-                        );
-                    }, []);
-
-                    incomes_list = Object.keys(incomes).reduce(function (list, key) {
-                        return list.concat(
-                            [{ name: 'Incomes', total: parseFloat(incomes[key].total), unit: key } ]
-                        );
-                    }, []);
-
-                    expenses_count_list = Object.keys(expenses).reduce(function (list, key) {
-                        return list.concat(
-                            [{
-                                name: 'Expenses (' + key + ')',
-                                total: expenses[key].count,
-                                unit: ''
-                            }]
-                        );
-                    }, []);
-
-                    incomes_count_list = Object.keys(incomes).reduce(function (list, key) {
-                        return list.concat(
-                            [{
-                                name: 'Income (' + key + ')',
-                                total: incomes[key].count,
-                                unit: ''
-                            }]
-                        );
-                    }, []);
+                        assets   = balance.balances(ledgers[2]),
+                        liabilities = balance.balances(ledgers[3]),
+                        expenses_list = tuple_list_by_key(expenses, 'Expenses'),
+                        incomes_list = tuple_list_by_key(incomes, 'Incomes'),
+                        expenses_count_list = tuple_list_count_by_key(expenses, 'Expenses (%s)'),
+                        incomes_count_list = tuple_list_count_by_key(incomes, 'Income (%s)'),
+                        assets_list = tuple_list_by_key(assets, 'Assets'),
+                        assets_count_list = tuple_list_count_by_key(assets, 'Assets (%s)'),
+                        liabilities_list = tuple_list_by_key(liabilities, 'Liabilities'),
+                        liabilities_count_list = tuple_list_count_by_key(liabilities, 'Liabilities (%s)');
 
                     return when.resolve({
                         expenses: expenses_list,
                         incomes: incomes_list,
                         expenses_count: expenses_count_list,
-                        incomes_count: incomes_count_list
+                        incomes_count: incomes_count_list,
+                        assets: assets_list,
+                        assets_count: assets_count_list,
+                        liabilities: liabilities_list,
+                        liabilities_count: liabilities_count_list
                     });
                 });
             }));

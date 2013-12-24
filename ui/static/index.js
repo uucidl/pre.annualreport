@@ -23,5 +23,7 @@ main.load(year,
 	      'incomes': document.getElementById('total-income'),
 	      'expenses_count': document.getElementById('count-expenses'),
 	      'incomes_count': document.getElementById('count-income'),
+	      'assets': document.getElementById('total-assets'),
+	      'liabilities': document.getElementById('total-liabilities')
 	  }
 	 );

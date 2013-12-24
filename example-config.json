@@ -1,6 +1,8 @@
 {
-    "version": 0,
+    "version": 3,
     "ledgerfile": null,
     "expense-account-re": "^Expenses:",
-    "income-account-re": "^Income:"
+    "income-account-re": "^Income:",
+    "assets-account-re": "^Assets:",
+    "liabilities-account-re": "^Liabilities:"
 }
