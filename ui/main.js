@@ -20,46 +20,46 @@ function attach_list(selection, list) {
         .text(function (d) { return d.unit; });
 }
 
-function load(period, uiconsole, payee_elements, account_elements, flows_elements) {
+function load(period, uiconsole, expenses_elements, incomes_elements, equity_elements) {
     function api_url(service, params) {
         return util.format('http://localhost:3000/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
     }
 
-    var odd_payees_url = api_url("odd_payees", { limit: 5, period: period }),
-        odd_accounts_url = api_url("odd_accounts", { limit: 5, period: period }),
-        flows_url = api_url("flows", { period: period });
+    var expenses_url = api_url("expenses", { limit: 5, period: period }),
+        incomes_url = api_url("incomes", { limit: 5, period: period }),
+        equity_url = api_url("equity", { period: period });
 
-    d3.json(odd_payees_url, function (json) {
+    d3.json(expenses_url, function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
-                payee_elements[key]
+                expenses_elements[key]
             );
 
             attach_list(selection, json[key]);
         });
-        uiconsole.say('Loaded payees');
+        uiconsole.say('Loaded expenses');
     });
 
-    d3.json(odd_accounts_url, function (json) {
+    d3.json(incomes_url, function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
-                account_elements[key]
+                incomes_elements[key]
             );
 
             attach_list(selection, json[key]);
         });
-        uiconsole.say('Loaded accounts');
+        uiconsole.say('Loaded incomes');
     });
 
-    d3.json(flows_url, function (json) {
-        if (!json) {
-            uiconsole.say('could not load flows');
-        }
+    d3.json(equity_url, function (json) {
         Object.keys(json).forEach(function (key) {
-            var selection = d3.select(flows_elements[key]);
+            var selection = d3.select(
+                equity_elements[key]
+            );
+
             attach_list(selection, json[key]);
         });
-        uiconsole.say('Loaded flows');
+        uiconsole.say('Loaded equity');
     });
 }
 

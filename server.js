@@ -81,11 +81,60 @@ ledger.version().then(function (version) {
         return ledgerfor(period, config['assets-account-re']);
     }
 
+    function tuple_list_by_key(map, tuple_name) {
+        return Object.keys(map).reduce(function (list, key) {
+            if (map[key].total.isZero()) {
+                return list;
+            }
+
+            return list.concat(
+                [{ name: tuple_name, total: parseFloat(map[key].total), unit: key } ]
+            );
+        }, []);
+    }
+
+    function tuple_list_count_by_key(map, tuple_name_pattern) {
+        return Object.keys(map).reduce(function (list, key) {
+            return list.concat(
+                [{
+                    name: util.format(tuple_name_pattern, key),
+                    total: map[key].count,
+                    unit: ''
+                }]
+            );
+        }, []);
+    }
+
     app = connect()
         .use(connect.static('./ui/static'))
         .use(connectRoute(function (router) {
             /*jslint unparam:true*/
-            router.get('/v1/odd_payees', json_response(function (req, res, next) {
+
+            function flows(name, name_with_unit_pattern, ledger, limit) {
+                return ledger.query().then(function (values) {
+                    return when.join(
+                        when.resolve(balance.balances(values)),
+                        outliers.payees_by_count(ledger, limit),
+                        outliers.payees_by_amount(ledger, limit),
+                        outliers.accounts_by_count(ledger, limit),
+                        outliers.accounts_by_amount(ledger, limit)
+                    );
+                }).then(function (values) {
+                    return when.resolve({
+                        balances: tuple_list_by_key(values[0], name),
+                        balances_count: tuple_list_count_by_key(
+                            values[0],
+                            name_with_unit_pattern
+                        ),
+                        payees_by_count: values[1],
+                        payees_by_amount: values[2],
+                        accounts_by_count: values[3],
+                        accounts_by_amount: values[4],
+                    });
+                });
+            }
+
+            router.get('/v1/expenses', json_response(function (req, res, next) {
                 var params = req_params(req),
                     limit = params.limit || 5,
                     period = params.period;
@@ -94,22 +143,10 @@ ledger.version().then(function (version) {
                     throw 'Missing period parameter';
                 }
 
-                return when.join(
-                    outliers.payees_by_count(expenses_ledger(period), limit),
-                    outliers.payees_by_count(income_ledger(period), limit),
-                    outliers.payees_by_amount(expenses_ledger(period), limit),
-                    outliers.payees_by_amount(income_ledger(period), limit)
-                ).then(function (values) {
-                    return when.resolve({
-                        expenses_by_count: values[0],
-                        income_by_count: values[1],
-                        expenses_by_amount: values[2],
-                        income_by_amount: values[3]
-                    });
-                });
+                return flows('Expenses', 'Expenses (%s)', expenses_ledger(period), limit);
             }));
 
-            router.get('/v1/odd_accounts', json_response(function (req, res, next) {
+            router.get('/v1/incomes', json_response(function (req, res, next) {
                 var params = req_params(req),
                     limit = params.limit || 5,
                     period = params.period;
@@ -118,22 +155,10 @@ ledger.version().then(function (version) {
                     throw 'Missing period parameter';
                 }
 
-                return when.join(
-                    outliers.accounts_by_count(expenses_ledger(period), limit),
-                    outliers.accounts_by_count(income_ledger(period), limit),
-                    outliers.accounts_by_amount(expenses_ledger(period), limit),
-                    outliers.accounts_by_amount(income_ledger(period), limit)
-                ).then(function (values) {
-                    return when.resolve({
-                        expenses_by_count: values[0],
-                        income_by_count: values[1],
-                        expenses_by_amount: values[2],
-                        income_by_amount: values[3]
-                    });
-                });
+                return flows('Income', 'Income (%s)', income_ledger(period), limit);
             }));
 
-            router.get('/v1/flows', json_response(function (req, res, next) {
+            router.get('/v1/equity', json_response(function (req, res, next) {
                 var params = req_params(req),
                     period = params.period;
 
@@ -142,56 +167,19 @@ ledger.version().then(function (version) {
                 }
 
                 return when.join(
-                    expenses_ledger(period).query(),
-                    income_ledger(period).query(),
                     assets_ledger(period).query(),
                     liabilities_ledger(period).query()
                 ).then(function (ledgers) {
-                    function tuple_list_by_key(map, tuple_name) {
-                        return Object.keys(map).reduce(function (list, key) {
-                            if (map[key].total.isZero()) {
-                                return list;
-                            }
-
-                            return list.concat(
-                                [{ name: tuple_name, total: parseFloat(map[key].total), unit: key } ]
-                            );
-                        }, []);
-                    }
-
-                    function tuple_list_count_by_key(map, tuple_name_pattern) {
-                        return Object.keys(map).reduce(function (list, key) {
-                            return list.concat(
-                                [{
-                                    name: util.format(tuple_name_pattern, key),
-                                    total: map[key].count,
-                                    unit: ''
-                                }]
-                            );
-                        }, []);
-                    }
-
-                    var expenses = balance.balances(ledgers[0]),
-                        incomes  = balance.balances(ledgers[1]),
-                        assets   = balance.balances(ledgers[2]),
-                        liabilities = balance.balances(ledgers[3]),
-                        expenses_list = tuple_list_by_key(expenses, 'Expenses'),
-                        incomes_list = tuple_list_by_key(incomes, 'Incomes'),
-                        expenses_count_list = tuple_list_count_by_key(expenses, 'Expenses (%s)'),
-                        incomes_count_list = tuple_list_count_by_key(incomes, 'Income (%s)'),
+                    var assets   = balance.balances(ledgers[0]),
+                        liabilities = balance.balances(ledgers[1]),
                         assets_list = tuple_list_by_key(assets, 'Assets'),
                         assets_count_list = tuple_list_count_by_key(assets, 'Assets (%s)'),
                         liabilities_list = tuple_list_by_key(liabilities, 'Liabilities'),
                         liabilities_count_list = tuple_list_count_by_key(liabilities, 'Liabilities (%s)');
-
                     return when.resolve({
-                        expenses: expenses_list,
-                        incomes: incomes_list,
-                        expenses_count: expenses_count_list,
-                        incomes_count: incomes_count_list,
-                        assets: assets_list,
+                        assets_total: assets_list,
                         assets_count: assets_count_list,
-                        liabilities: liabilities_list,
+                        liabilities_total: liabilities_list,
                         liabilities_count: liabilities_count_list
                     });
                 });

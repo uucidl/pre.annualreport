@@ -7,23 +7,23 @@ uiconsole.say('Loading...');
 main.load(year,
 	  uiconsole,
 	  {
-	      'income_by_count':    document.getElementById('payee-income_by_count'),
-	      'expenses_by_count':  document.getElementById('payee-expenses_by_count'),
-	      'income_by_amount':   document.getElementById('payee-income_by_amount'),
-	      'expenses_by_amount': document.getElementById('payee-expenses_by_amount'),
+	      'payees_by_count':  document.getElementById('payee-expenses_by_count'),
+	      'payees_by_amount': document.getElementById('payee-expenses_by_amount'),
+	      'accounts_by_count':  document.getElementById('account-expenses_by_count'),
+	      'accounts_by_amount': document.getElementById('account-expenses_by_amount'),
+	      'balances': document.getElementById('total-expenses'),
+	      'balances_count': document.getElementById('count-expenses'),
 	  },
 	  {
-	      'income_by_count':    document.getElementById('account-income_by_count'),
-	      'expenses_by_count':  document.getElementById('account-expenses_by_count'),
-	      'income_by_amount':   document.getElementById('account-income_by_amount'),
-	      'expenses_by_amount': document.getElementById('account-expenses_by_amount'),
+	      'balances': document.getElementById('total-income'),
+	      'payees_by_count':    document.getElementById('payee-income_by_count'),
+	      'payees_by_amount':   document.getElementById('payee-income_by_amount'),
+	      'accounts_by_count':    document.getElementById('account-income_by_count'),
+	      'accounts_by_amount':   document.getElementById('account-income_by_amount'),
+	      'balances_count': document.getElementById('count-income'),
 	  },
 	  {
-	      'expenses': document.getElementById('total-expenses'),
-	      'incomes': document.getElementById('total-income'),
-	      'expenses_count': document.getElementById('count-expenses'),
-	      'incomes_count': document.getElementById('count-income'),
-	      'assets': document.getElementById('total-assets'),
-	      'liabilities': document.getElementById('total-liabilities')
+	      'assets_total': document.getElementById('total-assets'),
+	      'liabilities_total': document.getElementById('total-liabilities')
 	  }
 	 );
