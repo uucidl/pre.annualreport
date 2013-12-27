@@ -37,10 +37,10 @@ body {
     align-items: flex-start;
 }
 
-.main > H1 {
+.main > H1:first-child {
     margin-top:    0;
 }
 
-.grid-cell > H2 {
+.grid-cell > H2:first-child {
     margin-top: 0;
 }
