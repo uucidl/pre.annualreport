@@ -7,9 +7,11 @@ var util = require('util');
 var url = require('url');
 var when = require('when');
 
+var balance = require('./lib/balance');
 var ledger = require('./lib/io/jw-ledger');
 var outliers = require('./lib/outliers');
-var balance = require('./lib/balance');
+var series = require('./lib/series');
+
 var config = require('./config.json');
 
 function json_response(f) {
@@ -110,26 +112,95 @@ ledger.version().then(function (version) {
         .use(connectRoute(function (router) {
             /*jslint unparam:true*/
 
-            function flows(name, name_with_unit_pattern, ledger, limit) {
+            function flows(
+                name,
+                name_with_unit_pattern,
+                ledger,
+                limit,
+                year
+            ) {
                 return ledger.query().then(function (values) {
                     return when.join(
                         when.resolve(balance.balances(values)),
                         outliers.payees_by_count(ledger, limit),
                         outliers.payees_by_amount(ledger, limit),
                         outliers.accounts_by_count(ledger, limit),
-                        outliers.accounts_by_amount(ledger, limit)
+                        outliers.accounts_by_amount(ledger, limit),
+                        values
                     );
                 }).then(function (values) {
+                    var transactions = values[5].transactions;
+
+                    function add_payee_count_history(payees) {
+                        payees.forEach(function (elem) {
+                            elem.history = series.sample_payee_by_count(
+                                elem.name,
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return payees;
+                    }
+
+                    function add_payee_history(payees) {
+                        payees.forEach(function (elem) {
+                            elem.history = series.sample_payee(
+                                elem.name,
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return payees;
+                    }
+
+                    function add_account_count_history(accounts) {
+                        accounts.forEach(function (elem) {
+                            elem.history = series.sample_account_by_count(
+                                elem.name,
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return accounts;
+                    }
+
+                    function add_account_history(accounts) {
+                        accounts.forEach(function (elem) {
+                            elem.history = series.sample_account(
+                                elem.name,
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return accounts;
+                    }
+
                     return when.resolve({
                         balances: tuple_list_by_key(values[0], name),
                         balances_count: tuple_list_count_by_key(
                             values[0],
                             name_with_unit_pattern
                         ),
-                        payees_by_count: values[1],
-                        payees_by_amount: values[2],
-                        accounts_by_count: values[3],
-                        accounts_by_amount: values[4],
+                        payees_by_count: add_payee_count_history(values[1]),
+                        payees_by_amount: add_payee_history(values[2]),
+                        accounts_by_count: add_account_count_history(values[3]),
+                        accounts_by_amount: add_account_history(values[4])
                     });
                 });
             }
@@ -143,7 +214,7 @@ ledger.version().then(function (version) {
                     throw 'Missing period parameter';
                 }
 
-                return flows('Expenses', 'Expenses (%s)', expenses_ledger(period), limit);
+                return flows('Expenses', 'Expenses (%s)', expenses_ledger(period), limit, period);
             }));
 
             router.get('/v1/incomes', json_response(function (req, res, next) {
@@ -155,7 +226,7 @@ ledger.version().then(function (version) {
                     throw 'Missing period parameter';
                 }
 
-                return flows('Income', 'Income (%s)', income_ledger(period), limit);
+                return flows('Income', 'Income (%s)', income_ledger(period), limit, period);
             }));
 
             router.get('/v1/equity', json_response(function (req, res, next) {
