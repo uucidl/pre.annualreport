@@ -22,7 +22,7 @@ function attach_list(selection, list) {
 
 function load(period, uiconsole, expenses_elements, incomes_elements, equity_elements) {
     function api_url(service, params) {
-        return util.format('http://localhost:3000/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
+        return util.format('/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
     }
 
     var expenses_url = api_url("expenses", { limit: 5, period: period }),
