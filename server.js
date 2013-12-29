@@ -135,7 +135,7 @@ ledger.version().then(function (version) {
                         payees.forEach(function (elem) {
                             elem.history = series.sample_payee_by_count(
                                 elem.name,
-                                elem.unit,
+                                undefined,
                                 [year, 1, 1],
                                 12,
                                 series.intervals.month,
@@ -165,7 +165,7 @@ ledger.version().then(function (version) {
                         accounts.forEach(function (elem) {
                             elem.history = series.sample_account_by_count(
                                 elem.name,
-                                elem.unit,
+                                undefined,
                                 [year, 1, 1],
                                 12,
                                 series.intervals.month,

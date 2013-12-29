@@ -3,6 +3,7 @@
 var d3 = require('d3');
 var util = require('util');
 var querystring = require('querystring');
+var sparkline = require('./sparkline');
 
 function attach_list(selection, list) {
     var rows = selection
@@ -18,6 +19,19 @@ function attach_list(selection, list) {
     rows.append('td')
         .classed('linked', true)
         .text(function (d) { return d.unit; });
+
+    rows.append('td')
+        .classed('sparkline', true);
+
+    rows.selectAll('.sparkline').each(
+        function (d) {
+            if (d.history) {
+                sparkline.sparkline(16, d.history.map(function (e) {
+                    return Math.round(e);
+                })).curve(d3.select(this));
+            }
+        }
+    );
 }
 
 function load(period, uiconsole, expenses_elements, incomes_elements, equity_elements) {
@@ -25,7 +39,7 @@ function load(period, uiconsole, expenses_elements, incomes_elements, equity_ele
         return util.format('/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
     }
 
-    var expenses_url = api_url("expenses", { limit: 5, period: period }),
+    var expenses_url = api_url("expenses", { limit: 10, period: period }),
         incomes_url = api_url("incomes", { limit: 5, period: period }),
         equity_url = api_url("equity", { period: period });
 
