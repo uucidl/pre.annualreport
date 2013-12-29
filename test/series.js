@@ -142,4 +142,37 @@ describe('series', function () {
         done();
     });
 
+    it('should count transactions, not postings', function (done) {
+        var transactions =
+            [
+                {
+                    state: null,
+                    date: ledger.date(2013, 1, 2),
+                    payee: 'fake-payee',
+                    postings: [
+                        {
+                            amount: ledger.amount(1, '#')
+                        },
+                        {
+                            amount: ledger.amount(2, '#')
+                        },
+                    ]
+                }
+            ],
+            counts = series.sample_payee_by_count(
+                'fake-payee',
+                '#',
+                [2013, 1, 1],
+                1,
+                series.intervals.month,
+                transactions
+            );
+
+        assert.deepEqual(new BigNum(1), counts.reduce(function (val, elem) {
+            return val.plus(elem);
+        }, new BigNum(0)));
+
+        done();
+    });
+
 });
