@@ -10,11 +10,13 @@ body {
 
 .grid {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
 }
 
 .grid-cell {
-    flex: 1;
+    flex: 1 0;
+    min-width: 16em;
 }
 
 .grid-cell-1-of-8 {

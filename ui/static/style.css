@@ -1,5 +1,5 @@
 body {
-    font-family: Puritan, Georgia;
+    font-family: Gill Sans, Lato;
     color: #c8c8c3;
     background: #222233;
 }
@@ -8,13 +8,13 @@ a:visited {
     color: #9999AA;
 }
 
-div.number, td.number {
-    text-align: right;
+h1, h2 {
+    font-weight: bold;
 }
 
-H1, H2 {
-    font-family: Puritan;
-    font-weight: bold;
+h3 {
+    margin-top: 1em;
+    margin-bottom: 0.1667em;
 }
 
 td + td {
@@ -25,26 +25,10 @@ td.linked {
     padding-left: 0;
 }
 
+div.number, td.number {
+    text-align: right;
+}
 
 .liabilities {
     color: #c84842;
-}
-
-.balance {
-    margin-top: 1em;
-    margin-bottom: 1em;
-    font-size: 200%;
-}
-
-.balance span:first-child {
-    margin-left: 0;
-}
-
-.balance span {
-    margin-left: 2em;
-}
-
-.footnote {
-    font-size: 66%;
-    font-style: italic;
 }

@@ -12,14 +12,6 @@ function attach_list(selection, list) {
         .enter()
         .append('tr');
 
-    rows.append('td').text(function (d) { return d.name + " "; });
-    rows.append('td')
-        .classed("number", true)
-        .text(function (d) { return Math.round(d.total); });
-    rows.append('td')
-        .classed('linked', true)
-        .text(function (d) { return d.unit; });
-
     rows.append('td')
         .each(function (d) {
             var element = d3.select(this),
@@ -30,9 +22,18 @@ function attach_list(selection, list) {
                     return Math.round(e);
                 });
 
-                sparkline.sparkline(16, history).curve(element);
+                sparkline.sparkline(16, history).curve(element, true);
             }
         });
+    rows.append('td')
+        .classed("number", true)
+        .text(function (d) { return Math.round(d.total); });
+
+    rows.append('td')
+        .classed('linked', true)
+        .text(function (d) { return d.unit || 'times'; });
+
+    rows.append('td').text(function (d) { return d.name; });
 }
 
 function load(period, uiconsole, expenses_elements, incomes_elements, equity_elements) {
