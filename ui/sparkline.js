@@ -2,7 +2,7 @@
 
 var d3 = require('d3');
 
-function svg_point_caption(selector, value) {
+function svg_point_caption(selector, font_size, value) {
     var g_class = value < 0 ? 'red' : 'black',
         offset_x = 3,
         text = (value > 0 ? '+' : '') + value,
@@ -16,14 +16,14 @@ function svg_point_caption(selector, value) {
         .append('text')
         .attr('text-anchor', 'left')
         .attr('x', offset_x)
-        .attr('font-size', '9px')
+        .attr('font-size', font_size + 'px')
         .attr('fill', "#c8c8c3")
         .text(text);
 
     return point;
 }
 
-exports.sparkline = function (height, samples) {
+exports.sparkline = function (selector, samples) {
     if (samples.length === 0) {
         return {
             curve: function () { return; },
@@ -31,8 +31,30 @@ exports.sparkline = function (height, samples) {
         };
     }
 
-    var mwidth = height / 5,
+    if (selector.empty()) {
+        throw 'cannot work on an empty selection';
+    }
+
+    function parse_size(size_px) {
+        var match = /([0-9]+)px/.exec(size_px);
+        return match ? match[1] : 0;
+    }
+
+    function container_height() {
+        // this takes the value from the font-size property
+        var cs = window.getComputedStyle(selector.node()),
+            font_size = parse_size(cs.getPropertyValue('font-size'));
+
+        return font_size;
+    }
+
+    var height = container_height(),
+        mwidth = height / 5,
         width = height * 4;
+
+    if (height <= 0) {
+        throw 'could not compute ideal height';
+    }
 
     function maxpoint(samples) {
         var max_value = d3.max(samples, function (d) { return Math.abs(d); }),
@@ -93,20 +115,16 @@ exports.sparkline = function (height, samples) {
         //!
         //! Append a sparkline showing the evolution as a curve
         //!
-        curve: function (selector, must_draw_zero) {
-            if (selector.empty()) {
-                throw 'cannot work on an empty selection';
-            }
-
+        curve: function (must_draw_zero) {
             var available_width = width,
                 y_offset = 0,
                 container = selector.append("span").attr('class', 'sparkline'),
                 top = new_topelement(container),
                 chart = top.append('g'),
                 last_xy = [samples.length - 1, samples[samples.length - 1]],
-                endpoint_shape = svg_point_caption(top, last_xy[1]),
+                endpoint_shape = svg_point_caption(top, height/2.0, last_xy[1]),
                 maxpoint_xy = maxpoint(samples),
-                maxpoint_shape = maxpoint_xy[1] !== last_xy[1] ? svg_point_caption(top, maxpoint_xy[1]) : undefined,
+                maxpoint_shape = maxpoint_xy[1] !== last_xy[1] ? svg_point_caption(top, height/2.0, maxpoint_xy[1]) : undefined,
                 line,
                 xscale,
                 yscale;

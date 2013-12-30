@@ -22,7 +22,7 @@ function attach_list(selection, list) {
                     return Math.round(e);
                 });
 
-                sparkline.sparkline(13, history).curve(element, true);
+                sparkline.sparkline(element, history).curve(true);
             }
         });
     rows.append('td')
