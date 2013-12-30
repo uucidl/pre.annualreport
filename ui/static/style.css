@@ -4,6 +4,16 @@ body {
     background: #222233;
 }
 
+@media print {
+    body {
+	font-size: 9pt;
+    }
+
+    #console {
+	display: none;
+    }
+}
+
 a:visited {
     color: #9999AA;
 }

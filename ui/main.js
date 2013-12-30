@@ -22,7 +22,7 @@ function attach_list(selection, list) {
                     return Math.round(e);
                 });
 
-                sparkline.sparkline(16, history).curve(element, true);
+                sparkline.sparkline(13, history).curve(element, true);
             }
         });
     rows.append('td')
@@ -41,7 +41,7 @@ function load(period, uiconsole, expenses_elements, incomes_elements, equity_ele
         return util.format('/v1/%s%s', service, querystring ? '?' + querystring.stringify(params) : '');
     }
 
-    var expenses_url = api_url("expenses", { limit: 10, period: period }),
+    var expenses_url = api_url("expenses", { limit: 7, period: period }),
         incomes_url = api_url("incomes", { limit: 5, period: period }),
         equity_url = api_url("equity", { period: period });
 
