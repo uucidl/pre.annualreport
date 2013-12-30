@@ -21,17 +21,18 @@ function attach_list(selection, list) {
         .text(function (d) { return d.unit; });
 
     rows.append('td')
-        .classed('sparkline', true);
+        .each(function (d) {
+            var element = d3.select(this),
+                history;
 
-    rows.selectAll('.sparkline').each(
-        function (d) {
-            if (d.history) {
-                sparkline.sparkline(16, d.history.map(function (e) {
+            if (d.history && d.history.length > 0) {
+                history = d.history.map(function (e) {
                     return Math.round(e);
-                })).curve(d3.select(this));
+                });
+
+                sparkline.sparkline(16, history).curve(element);
             }
-        }
-    );
+        });
 }
 
 function load(period, uiconsole, expenses_elements, incomes_elements, equity_elements) {

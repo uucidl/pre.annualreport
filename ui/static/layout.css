@@ -21,6 +21,10 @@ body {
     flex: 0 0 12.5%;
 }
 
+.grid-cell-1-of-6 {
+    flex: 0 0 16.67%;
+}
+
 .grid-cell-1-of-16 {
     flex: 0 0 6.25%;
 }

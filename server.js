@@ -131,6 +131,34 @@ ledger.version().then(function (version) {
                 }).then(function (values) {
                     var transactions = values[5].transactions;
 
+                    function add_count_history(balances) {
+                        balances.forEach(function (elem) {
+                            elem.history = series.sample_by_count(
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return balances;
+                    }
+
+                    function add_history(balances) {
+                        balances.forEach(function (elem) {
+                            elem.history = series.sample(
+                                elem.unit,
+                                [year, 1, 1],
+                                12,
+                                series.intervals.month,
+                                transactions
+                            ).map(parseFloat);
+                        });
+
+                        return balances;
+                    }
+
                     function add_payee_count_history(payees) {
                         payees.forEach(function (elem) {
                             elem.history = series.sample_payee_by_count(
@@ -192,11 +220,11 @@ ledger.version().then(function (version) {
                     }
 
                     return when.resolve({
-                        balances: tuple_list_by_key(values[0], name),
-                        balances_count: tuple_list_count_by_key(
+                        balances: add_history(tuple_list_by_key(values[0], name)),
+                        balances_count: add_count_history(tuple_list_count_by_key(
                             values[0],
                             name_with_unit_pattern
-                        ),
+                        )),
                         payees_by_count: add_payee_count_history(values[1]),
                         payees_by_amount: add_payee_history(values[2]),
                         accounts_by_count: add_account_count_history(values[3]),
