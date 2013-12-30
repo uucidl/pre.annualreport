@@ -94,6 +94,10 @@ exports.sparkline = function (height, samples) {
         //! Append a sparkline showing the evolution as a curve
         //!
         curve: function (selector, must_draw_zero) {
+            if (selector.empty()) {
+                throw 'cannot work on an empty selection';
+            }
+
             var available_width = width,
                 y_offset = 0,
                 container = selector.append("span").attr('class', 'sparkline'),
