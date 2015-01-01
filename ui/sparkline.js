@@ -1,5 +1,7 @@
 "use strict";
 
+/*jslint browser: true*/
+
 var d3 = require('d3');
 
 function svg_point_caption(selector, font_size, value) {
@@ -122,9 +124,9 @@ exports.sparkline = function (selector, samples) {
                 top = new_topelement(container),
                 chart = top.append('g'),
                 last_xy = [samples.length - 1, samples[samples.length - 1]],
-                endpoint_shape = svg_point_caption(top, height/2.0, last_xy[1]),
+                endpoint_shape = svg_point_caption(top, height / 2.0, last_xy[1]),
                 maxpoint_xy = maxpoint(samples),
-                maxpoint_shape = maxpoint_xy[1] !== last_xy[1] ? svg_point_caption(top, height/2.0, maxpoint_xy[1]) : undefined,
+                maxpoint_shape = maxpoint_xy[1] !== last_xy[1] ? svg_point_caption(top, height / 2.0, maxpoint_xy[1]) : undefined,
                 line,
                 xscale,
                 yscale;
