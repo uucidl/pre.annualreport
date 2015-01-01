@@ -2,6 +2,7 @@
 
 var connect = require('connect');
 var connectRoute = require('connect-route');
+var serveStatic = require('serve-static');
 var http = require('http');
 var util = require('util');
 var url = require('url');
@@ -108,7 +109,7 @@ ledger.version().then(function (version) {
     }
 
     app = connect()
-        .use(connect.static('./ui/static'))
+        .use(serveStatic('./ui/static'))
         .use(connectRoute(function (router) {
             /*jslint unparam:true*/
 
