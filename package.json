@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "when": "3.6.4",
-        "node-expat": "2.3.4",
+        "node-expat": "2.3.13",
         "bignumber.js": "2.0.0",
         "connect": "3.3.3",
         "connect-route": "0.1.4",
