@@ -11,9 +11,9 @@
         "doc": "docco lib/*.js lib/io/*.js ui/*.js -o ui/static/docs"
     },
     "dependencies": {
-        "when": "3.6.4",
+        "when": "3.7.7",
         "node-expat": "2.3.13",
-        "bignumber.js": "2.0.0",
+        "bignumber.js": "2.4.0",
         "connect": "3.3.3",
         "connect-route": "0.1.4",
         "serve-static": "1.7.1",
