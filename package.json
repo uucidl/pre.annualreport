@@ -11,21 +11,21 @@
         "doc": "docco lib/*.js lib/io/*.js ui/*.js -o ui/static/docs"
     },
     "dependencies": {
-        "when": "3.7.7",
+        "when": "3.7.8",
         "node-expat": "2.3.13",
-        "bignumber.js": "2.4.0",
-        "connect": "3.3.3",
-        "connect-route": "0.1.4",
+        "bignumber.js": "4.0.4",
+        "connect": "3.6.5",
+        "connect-route": "0.1.5",
         "serve-static": "1.7.1",
-        "d3": "3.5.3",
+        "d3": "3.5.17",
         "node-watch": "0.3.4"
     },
     "devDependencies": {
-        "mocha": "2.1.0",
-        "jslint": "0.7.1",
-        "browserify": "8.0.2",
-        "html5-lint": "0.2.3",
+        "mocha": "3.5.3",
+        "jslint": "0.10.3",
+        "browserify": "14.4.0",
+        "html5-lint": "0.3.0",
         "recess": "1.1.9",
-        "docco": "0.6.2"
+        "docco": "0.7.0"
     }
 }
