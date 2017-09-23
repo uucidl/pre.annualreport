@@ -53,7 +53,7 @@ ledger.version().then(function (version) {
     var ledger_file = config.ledgerfile,
         port = 3000,
         app,
-        ledger_cache = {};
+        ledger_cache = ledger.Cache(ledger_file);
 
     function ledgerfor(period, account_re) {
         return {

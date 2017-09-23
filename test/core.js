@@ -57,7 +57,10 @@ describe('ledger', function () {
             return when.resolve([fs.readFileSync('test/data/ledger.xml'), null]);
         }
 
-        ledger.query('fake-file', [], mock_ledger).then(function (result) {
+        ledger.query('fake-file',
+                     [],
+                     mock_ledger,
+                     /* deactivate cache */null).then(function (result) {
             console.log(result);
 
             assert.equal(2, result.transactions.length);
@@ -139,7 +142,16 @@ describe('ledger', function () {
     });
 
     it('should optionally fetch results from a cache', function (done) {
-        var cache = {};
+        var cacheData = [],
+            cache = {
+                find: function (key) {
+                    return cacheData[key];
+                },
+                put: function (key, value) {
+                    cacheData[key] = value;
+                    return value;
+                },
+            };
 
         function mock_ledger() {
             /*jslint stupid:true*/

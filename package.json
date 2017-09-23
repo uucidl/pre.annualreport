@@ -18,7 +18,7 @@
         "connect-route": "0.1.5",
         "serve-static": "1.7.1",
         "d3": "3.5.17",
-        "node-watch": "0.3.4"
+        "node-watch": "0.5.5"
     },
     "devDependencies": {
         "mocha": "3.5.3",
