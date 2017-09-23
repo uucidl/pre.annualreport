@@ -120,7 +120,10 @@ ledger.version().then(function (version) {
                 limit,
                 year
             ) {
-                return ledger.query().then(function (values) {
+                var flags = [];
+                // NOTE(nicolas): crashes w/ assertion error:
+                flags = ['--exchange', '€'];
+                return ledger.query(flags).then(function (values) {
                     return when.join(
                         when.resolve(balance.balances(values)),
                         outliers.payees_by_count(ledger, limit),
