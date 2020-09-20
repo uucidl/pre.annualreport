@@ -33,7 +33,7 @@ function req_params(req) {
 }
 
 function validate_config(config) {
-    if (config.version !== 0) {
+    if (config.version !== 3) {
         throw util.format('Unknown config version %s', config.version);
     }
 
