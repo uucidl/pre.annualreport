@@ -45,7 +45,7 @@ function load(period, uiconsole, expenses_elements, incomes_elements, equity_ele
         incomes_url = api_url("incomes", { limit: 5, period: period }),
         equity_url = api_url("equity", { period: period });
 
-    d3.json(expenses_url, function (json) {
+    d3.json(expenses_url).then(function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 expenses_elements[key]
@@ -56,7 +56,7 @@ function load(period, uiconsole, expenses_elements, incomes_elements, equity_ele
         uiconsole.say('Loaded expenses');
     });
 
-    d3.json(incomes_url, function (json) {
+    d3.json(incomes_url).then(function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 incomes_elements[key]
@@ -67,7 +67,7 @@ function load(period, uiconsole, expenses_elements, incomes_elements, equity_ele
         uiconsole.say('Loaded incomes');
     });
 
-    d3.json(equity_url, function (json) {
+    d3.json(equity_url).then(function (json) {
         Object.keys(json).forEach(function (key) {
             var selection = d3.select(
                 equity_elements[key]

@@ -136,14 +136,14 @@ exports.sparkline = function (selector, samples) {
                 y_offset += maxpoint_shape.node().getBBox().height;
             }
 
-            yscale = new_yscale(d3.scale.linear()).range([height, y_offset]);
-            xscale = new_xscale(d3.scale.linear()).range(
+            yscale = new_yscale(d3.scaleLinear()).range([height, y_offset]);
+            xscale = new_xscale(d3.scaleLinear()).range(
                 [mwidth, available_width - mwidth]
             );
 
             /*jslint unparam: true*/
-            line = d3.svg.line()
-                .interpolate('basis')
+            line = d3.line()
+                .curve(d3.curveBasis)
                 .x(function (d, i) { return xscale(i); })
                 .y(function (d) { return yscale(d); });
             /*jslint unparam: false*/
