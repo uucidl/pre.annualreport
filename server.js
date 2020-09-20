@@ -121,8 +121,8 @@ ledger.version().then(function (version) {
                 year
             ) {
                 var flags = [];
-                // NOTE(nicolas): crashes w/ assertion error:
-                flags = ['--exchange', '€'];
+                // NOTE(nicolas): crashes w/ assertion error w/o the --no-revalued flag.
+                flags = ['--exchange', '€', '--no-revalued'];
                 return ledger.query(flags).then(function (values) {
                     return when.join(
                         when.resolve(balance.balances(values)),
