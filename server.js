@@ -102,7 +102,8 @@ ledger.version().then(function (version) {
                 [{
                     name: util.format(tuple_name_pattern, key),
                     total: map[key].count,
-                    unit: ''
+                    unit: '',
+                    commodity: key,
                 }]
             );
         }, []);
@@ -138,7 +139,7 @@ ledger.version().then(function (version) {
                     function add_count_history(balances) {
                         balances.forEach(function (elem) {
                             elem.history = series.sample_by_count(
-                                elem.unit,
+                                elem.commodity,
                                 [year, 1, 1],
                                 12,
                                 series.intervals.month,
