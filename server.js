@@ -144,7 +144,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return balances;
@@ -158,7 +158,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return balances;
@@ -173,7 +173,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return payees;
@@ -188,7 +188,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return payees;
@@ -203,7 +203,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return accounts;
@@ -218,7 +218,7 @@ ledger.version().then(function (version) {
                                 12,
                                 series.intervals.month,
                                 transactions
-                            ).map(parseFloat);
+                            ).map(function (x) { return parseFloat(x); });
                         });
 
                         return accounts;
