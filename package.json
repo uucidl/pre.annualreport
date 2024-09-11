@@ -16,7 +16,7 @@
         "bignumber.js": "9.0.0",
         "connect": "3.7.0",
         "connect-route": "0.1.5",
-        "serve-static": "1.14.1",
+        "serve-static": "1.16.0",
         "d3": "6.1.1",
         "node-watch": "0.6.4"
     },
